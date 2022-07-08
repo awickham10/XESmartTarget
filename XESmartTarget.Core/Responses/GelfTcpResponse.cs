@@ -72,6 +72,7 @@ namespace XESmartTarget.Core.Responses
                     EventsTable.Columns.Add("timestamp", typeof(double));
                 }
 
+                var shortMessage;
                 foreach (DataRow dr in EventsTable.Rows)
                 {
                     // populate host column
@@ -97,7 +98,13 @@ namespace XESmartTarget.Core.Responses
                     // populate short_message column
                     if (dr["short_message"] == null)
                     {
-                        dr.SetField("short_message", dr["message"] ?? "No message from XE session");
+                        if (dr["message"] == null || dr["message"] == '') {
+                            shortMessage = "No message from XE session";
+                        } else {
+                            shortMessage = dr["message"];
+                        }
+
+                        dr.SetField("short_message", shortMessage);
                     }
 
                     // check lengths since elasticsearch has a 32kb limit
